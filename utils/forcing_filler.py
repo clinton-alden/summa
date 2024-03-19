@@ -41,6 +41,8 @@ def rel_hum(df):
     Extrapolation of synoptic meteorological data in mountainous terrain and its use for simulating 
     forest evapotranspiration and photosynthesis. Canadian Journal of Forest Research, 17(6), 472-483.
     
+    NOTE - This inputs air temperature in degrees Celsius
+
     Clinton Alden - October 2023
     '''
     
@@ -50,25 +52,17 @@ def rel_hum(df):
     # Calculate the minimum temperature in the preceding and following rows
     df['min_temp_preceding'] = df['airtemp'].shift(1).rolling(window=preceding_rows, min_periods=1).min()
     df['min_temp_following'] = df['airtemp'].shift(-1).rolling(window=following_rows, min_periods=1).min()
-   
+
     # Initialize the t_d and rh columns
     df['t_d'] = 0
     df['rh'] = 0
 
     # Determine the dewpoint temperature from the minimum temperature between preceding and following 12 hours.
-    for i in df.index:
-        if (df['min_temp_preceding'][i] > df['min_temp_following'][i]):
-            df['t_d'][i] = df['min_temp_following'][i]
-        else:
-            df['t_d'][i] = df['min_temp_preceding'][i]
-    
+    df['t_d'] = df[['min_temp_preceding', 'min_temp_following']].min(axis=1)
+
     # Fill missing relative humidity obs based on air and dewpoint temperature using Lawrence (2005) method.
-    for i in df.index:
-        if df['rh'][i] > 0:
-            df['rh'][i] = df['rh'][i]
-        else:
-            df['rh'][i] = 100-5*(df['airtemp'][i]-df['t_d'][i])
-    
+    df['rh'] = 100 - 5 * (df['airtemp'] - df['t_d'])
+
     df.drop(columns=['min_temp_preceding', 'min_temp_following', 't_d'], inplace=True)
     
     return(df)
@@ -92,11 +86,19 @@ def FtoK(df):
     return(df)
 
     
-def spec_hum(rh, T, p):
+def spec_hum(df):
     # Calculate specific humidity from relative humidity, air temperature in K, and air pressure.
      
+    rh = df['rh']
+    T = df['airtemp']
+    p = df['airpres']
+
     T0 = 273.15
-    return rh * np.exp((17.67*(T-T0))/(T-29.65)) / (0.263*p)
+
+    spechum = rh * np.exp((17.67*(T-T0))/(T-29.65)) / (0.263*p)
+    df['spechum'] = spechum
+
+    return(df)
 
 
 def pressure(df, elevation):
