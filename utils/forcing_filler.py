@@ -20,14 +20,14 @@ List of functions:
         MPHtoMPS
         
 
-Clinton Alden - December 2023
+Clinton Alden - last updated March 2024
 University of Washington
 '''
 import numpy as np
 import pandas as pd
 import math
 
-def rel_hum(df):
+def fill_rel_hum(df):
     '''
     Create a function to filling missing relative humidity values from estimated dewpoint using method 
     described in Lawrence (2005). Dewpoint is defined as minimum temperature in over the preceeding 12 
@@ -86,7 +86,7 @@ def FtoK(df):
     return(df)
 
     
-def spec_hum(df):
+def fill_spec_hum(df):
     # Calculate specific humidity from relative humidity, air temperature in K, and air pressure.
      
     rh = df['rh']
@@ -101,14 +101,14 @@ def spec_hum(df):
     return(df)
 
 
-def pressure(df, elevation):
+def fill_pressure(df, elevation):
     '''This function first derives a typical pressure value for the elevation of the 
     grid using the hypsometric equation and atmospheric scale height for midlatitudes.
     Then, using this typical pressure value it computes mixing ratio and virtual
     temperature. Using these calculated values, it then recomputes air pressure using
     the hypsometric equation.
     
-    Clinton Alden - November 2023
+    Clinton Alden - last updated March 2024
     '''
     
     # Define constants
@@ -131,11 +131,11 @@ def pressure(df, elevation):
     #print(p_typ)
     
     # Initialize new columns
-    df['e_s'] = 0
-    df['e'] = 0
-    df['w'] = 0
-    df['T_v'] = 0
-    df['airpres'] = 0
+    df['e_s'] = np.zeros(len(df), dtype=float)
+    df['e'] = np.zeros(len(df), dtype=float)
+    df['w'] = np.zeros(len(df), dtype=float)
+    df['T_v'] = np.zeros(len(df), dtype=float)
+    df['airpres'] = np.zeros(len(df), dtype=float)
     
     for i in df.index:
         # Calculate vapor pressure
@@ -163,7 +163,7 @@ def precip_rate(df):
     df.acc_precip[df.acc_precip < 0] = 0
 
     # Calculate hourly precip from accumulated
-    df['pptrate'] = np.gradient(df.acc_precip)
+    df['pptrate'] = df.acc_precip.diff()
 
     # Set negative accumulations to zero
     df.pptrate[df.pptrate < 0] = 0
