@@ -3,8 +3,8 @@ import pandas as pd
 import urllib.parse
 import time
 
-API_KEY = "{{YOUR_API_KEY}}"
-EMAIL = "insert.your.email@fake.com"
+API_KEY = "{{sOwWIrEwTmAkCjTTJ7eN3wf2xiTaSjIpv1of8u2a}}"
+EMAIL = "cdalden@uw.edu"
 BASE_URL = "https://developer.nrel.gov/api/nsrdb/v2/solar/full-disc-download.json?"
 POINTS = [
 '667383'
