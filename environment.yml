@@ -43,7 +43,7 @@ dependencies:
   - cligj=0.7.2
   - cloudpickle=2.2.1
   - colorama=0.4.4
-  - conda=4.11.0
+#  - conda=4.11.0
   - conda-package-handling=1.7.3
   - configurable-http-proxy=4.5.0
   - cryptography=39.0.1
