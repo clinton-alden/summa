@@ -2,6 +2,12 @@ import numpy as np
 import shapely
 import geopandas as gpd
 from cartopy.feature import NaturalEarthFeature
+import pandas as pd
+import xarray as xr
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from matplotlib import cm
+import datetime
 
 
 def justify(a, invalid_val=np.nan, axis=1, side='right'):
