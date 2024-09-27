@@ -2,9 +2,43 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import datetime
+import os
 
-run_name ='harts_+4K_WY23'
-harts = xr.open_dataset('../model/output/harts_pass/template_output_'+run_name+'_timestep.nc')
+def justify(a, invalid_val=np.nan, axis=1, side='right'):
+    """
+    Justifies a 2D array
+    Courtesy: https://stackoverflow.com/questions/44558215/python-justifying-numpy-array/44559180#44559180
+
+    Parameters
+    ----------
+    A : ndarray
+        Input array to be justified
+    axis : int
+        Axis along which justification is to be made
+    side : str
+        Direction of justification. It could be 'left', 'right', 'up', 'down'
+        It should be 'left' or 'right' for axis=1 and 'up' or 'down' for axis=0.
+
+    """
+    if invalid_val is np.nan:
+        mask = ~np.isnan(a)
+    else:
+        mask = a!=invalid_val
+    justified_mask = np.sort(mask,axis=axis)
+    if (side=='up') | (side=='left'):
+        justified_mask = np.flip(justified_mask,axis=axis)
+    out = np.full(a.shape, invalid_val)
+    if axis==1:
+        out[justified_mask] = a[mask]
+    else:
+        out.T[justified_mask.T] = a.T[mask.T]
+    return out
+
+run_name = input("Enter the run name: ")
+print('**********')
+print(run_name)
+print('**********')
+harts = xr.open_dataset('/Users/clintonalden/Documents/Research/summa_work/model/output/harts_pass/template_output_'+run_name+'_timestep.nc')
 
 depth = harts.isel(hru=0)['iLayerHeight']
 var = harts.isel(hru=0)['mLayerVolFracWat']
@@ -70,4 +104,6 @@ ds['crust_days'].loc[dict(time=date, model_run=model_run, site=site)] = crust_da
 # Assign a value to the 'mean_crusts' variable at the specified coordinates
 ds['mean_crusts'].loc[dict(time=date, model_run=model_run, site=site)] = mean_crusts
 
-ds.to_netcdf('/Users/clintonalden/Documents/Research/summa_work/analysis/crust_stats.nc')
+temp_file = '/Users/clintonalden/Documents/Research/summa_work/analysis/crust_stats_temp.nc'
+ds.to_netcdf(temp_file, mode='w')
+os.rename(temp_file, '/Users/clintonalden/Documents/Research/summa_work/analysis/crust_stats.nc')
