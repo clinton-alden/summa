@@ -86,24 +86,24 @@ depth = out.isel(hru=0)['iLayerHeight']
 temp = out.isel(hru=0)['mLayerTemp']
 frac_wat = out.isel(hru=0)['mLayerVolFracWat']
 
-# # plot snow depth and layer temperature
-# plot = psp.layers(temp, depth, colormap='viridis', plot_soil=False, plot_snow=True, add_colorbar=True)
-# out['scalarSnowDepth'].plot(color='red', linewidth=2)
-# plt.title(out_name+' Temperature and Snow Depth')
-# plt.xlabel('Date')
-# plt.ylabel('Snow Depth [m]')
-# plt.grid(ls='--', alpha=0.5)
+# plot snow depth and layer temperature
+plot = psp.layers(temp, depth, colormap='Blues', plot_soil=False, plot_snow=True, add_colorbar=True)
+out['scalarSnowDepth'].plot(color='red', linewidth=2)
+plt.title('Expiremental HRRR Forced SUMMA\n'+out_name+' Temperature and Snow Depth\nObserved Met. Forcing to present + 48hr 3km HRRR Forecast')
+plt.xlabel('Date')
+plt.ylabel('Snow Depth [m]')
+plt.grid(ls='--', alpha=0.5)
 
-# # plt.savefig('./output/plots/'+out_name+'_layer_temp.png', dpi=200)
-# plt.close()
+plt.savefig('/home/cdalden/summa_setup/twitter_api/plots/'+out_name+'_layer_temp.png', dpi=200)
+plt.close()
 
-# # plot snow depth and layer density
-# plot = psp.layers(frac_wat, depth, colormap='viridis', plot_soil=False, plot_snow=True, add_colorbar=True)
-# out['scalarSnowDepth'].plot(color='red', linewidth=2)
-# plt.title(out_name+' Density and Snow Depth')
-# plt.xlabel('Date')
-# plt.ylabel('Snow Depth [m]')
-# plt.grid(ls='--', alpha=0.5)
+# plot snow depth and layer density
+plot = psp.layers(frac_wat, depth, colormap='viridis', plot_soil=False, plot_snow=True, add_colorbar=True)
+out['scalarSnowDepth'].plot(color='red', linewidth=2)
+plt.title('Expiremental HRRR Forced SUMMA\n'+out_name+' Density and Snow Depth\nObserved Met. Forcing to present + 48hr 3km HRRR Forecast')
+plt.xlabel('Date')
+plt.ylabel('Snow Depth [m]')
+plt.grid(ls='--', alpha=0.5)
 
-# plt.savefig('./output/plots/'+out_name+'_layer_density.png', dpi=200)
-# plt.close()
+plt.savefig('/home/cdalden/summa_setup/twitter_api/plots/'+out_name+'_layer_density.png', dpi=200)
+plt.close()
